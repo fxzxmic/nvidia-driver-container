@@ -24,23 +24,16 @@ jobs:
           dnf install -y dnf-plugins-core rpmdevtools &&
           spectool --get-files --directory=SOURCES --all SPECS/*.spec &&
           dnf builddep -y SPECS/*.spec &&
-          rpmbuild --define '_topdir /workspace' -ba SPECS/*.spec &&
-          grep -i '^version' SPECS/*.spec | awk '{print \"Driver Ver: \" \$NF}' >> release.log &&
-          rpm -q --qf 'Kernel Ver: %{VERSION}-%{RELEASE}\n' kernel-devel >> release.log
+          rpmbuild --define '_topdir /workspace' -ba SPECS/*.spec
         "
 
     - name: Set Variables
       id: vars
       run: |
-        echo "version=$(grep -i '^kernel' release.log | awk '{print $NF}')" >> $GITHUB_OUTPUT
-
-    - name: Check
-      run: |
-        cat release.log
+        echo "version=$(grep -i '^version' SPECS/*.spec | awk '{print $NF}')" >> $GITHUB_OUTPUT
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ steps.vars.outputs.version }}
-        body_path: release.log
         files: RPMS/*/*
