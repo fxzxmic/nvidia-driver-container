@@ -62,6 +62,9 @@ mv libnvidia-allocator.so.%{version} %{buildroot}%{_libdir}/nvidia
 
 jq .ICD.library_path=\"libEGL_nvidia.so.0\" %{buildroot}%{_datadir}/nvidia/vulkan/nvidia_icd.json > %{buildroot}%{_datadir}/nvidia/vulkan/egl-nvidia_icd.json
 jq .layers[0].library_path=\"libEGL_nvidia.so.0\" %{buildroot}%{_datadir}/nvidia/vulkan/nvidia_layers.json > %{buildroot}%{_datadir}/nvidia/vulkan/egl-nvidia_layers.json
+# No X11 support
+rm %{buildroot}%{_datadir}/nvidia/vulkan/nvidia_icd.json
+rm %{buildroot}%{_datadir}/nvidia/vulkan/nvidia_layers.json
 
 # Create symbolic links
 cd %{buildroot}%{_libdir}
