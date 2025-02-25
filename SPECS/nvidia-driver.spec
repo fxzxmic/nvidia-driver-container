@@ -13,6 +13,9 @@ Source1:                https://download.nvidia.com/XFree86/Linux-%{_arch}/%{ver
 
 BuildRequires:          jq
 
+Requires:               libnvidia-egl-wayland.so.1()%{?elf_bits}
+Requires:               libnvidia-egl-gbm.so.1()%{?elf_bits}
+
 ExclusiveArch:          x86_64
 
 %description
@@ -35,7 +38,6 @@ mkdir -p %{buildroot}%{_libdir}/gbm
 mkdir -p %{buildroot}%{_datadir}/nvidia
 mkdir -p %{buildroot}%{_datadir}/nvidia/vulkan
 mkdir -p %{buildroot}%{_datadir}/glvnd/egl_vendor.d
-mkdir -p %{buildroot}%{_datadir}/egl/egl_external_platform.d
 
 install -Dm0644 /dev/null -t %{buildroot}%{_datadir}/vulkan/icd.d/nvidia_icd.json
 install -Dm0644 /dev/null -t %{buildroot}%{_datadir}/vulkan/implicit_layer.d/nvidia_layers.json
@@ -54,10 +56,6 @@ mv libnvidia-eglcore.so.%{version} %{buildroot}%{_libdir}/nvidia
 mv libEGL_nvidia.so.%{version} %{buildroot}%{_libdir}/nvidia
 mv libGLESv2_nvidia.so.%{version} %{buildroot}%{_libdir}/nvidia
 mv libGLESv1_CM_nvidia.so.%{version} %{buildroot}%{_libdir}/nvidia
-mv libnvidia-egl-wayland.so.* %{buildroot}%{_libdir}/nvidia
-mv 10_nvidia_wayland.json %{buildroot}%{_datadir}/egl/egl_external_platform.d
-mv libnvidia-egl-gbm.so.* %{buildroot}%{_libdir}/nvidia
-mv 15_nvidia_gbm.json %{buildroot}%{_datadir}/egl/egl_external_platform.d
 mv libnvidia-allocator.so.%{version} %{buildroot}%{_libdir}/nvidia
 
 jq .ICD.library_path=\"libEGL_nvidia.so.0\" %{buildroot}%{_datadir}/nvidia/vulkan/nvidia_icd.json > %{buildroot}%{_datadir}/nvidia/vulkan/egl-nvidia_icd.json
@@ -78,8 +76,6 @@ ln -sr nvidia/libnvidia-eglcore.so.%{version} libnvidia-eglcore.so.%{version}
 ln -sr nvidia/libEGL_nvidia.so.%{version} libEGL_nvidia.so.0
 ln -sr nvidia/libGLESv2_nvidia.so.%{version} libGLESv2_nvidia.so.2
 ln -sr nvidia/libGLESv1_CM_nvidia.so.%{version} libGLESv1_CM_nvidia.so.1
-ln -sr nvidia/libnvidia-egl-wayland.so.* libnvidia-egl-wayland.so.1
-ln -sr nvidia/libnvidia-egl-gbm.so.* libnvidia-egl-gbm.so.1
 ln -sr nvidia/libnvidia-allocator.so.%{version} libnvidia-allocator.so.1
 ln -sr libnvidia-allocator.so.1 gbm/nvidia-drm_gbm.so
 ln -sr libnvidia-allocator.so.1 libnvidia-allocator.so
@@ -126,18 +122,11 @@ fi
 %{_datadir}/glvnd/egl_vendor.d/*
 %{_datadir}/nvidia/vulkan/egl-nvidia_icd.json
 %{_datadir}/nvidia/vulkan/egl-nvidia_layers.json
-# nvidia-wayland
-%{_libdir}/nvidia/libnvidia-egl-wayland.so.*
-%{_libdir}/libnvidia-egl-wayland.so.1
-%{_datadir}/egl/egl_external_platform.d/10_nvidia_wayland.json
 # nvidia-gbm
 %dir %{_libdir}/gbm
 %{_libdir}/gbm/*
 %{_libdir}/nvidia/libnvidia-allocator.so.%{version}
 %{_libdir}/libnvidia-allocator.so.1
 %{_libdir}/libnvidia-allocator.so
-%{_libdir}/nvidia/libnvidia-egl-gbm.so.*
-%{_libdir}/libnvidia-egl-gbm.so.1
-%{_datadir}/egl/egl_external_platform.d/15_nvidia_gbm.json
 
 %changelog
