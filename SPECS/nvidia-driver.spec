@@ -3,7 +3,7 @@
 %endif
 
 Name:                   nvidia-driver
-Version:                550.144.03
+Version:                570.124.04
 Release:                1
 Summary:                NVIDIA binary driver for Linux container
 License:                NVIDIA
@@ -15,6 +15,10 @@ BuildRequires:          jq
 
 Requires:               libnvidia-egl-wayland.so.1()%{?elf_bits}
 Requires:               libnvidia-egl-gbm.so.1()%{?elf_bits}
+
+Requires:               %{_datadir}/glvnd/egl_vendor.d
+Requires:               %{_datadir}/vulkan/icd.d
+Requires:               %{_datadir}/vulkan/implicit_layer.d
 
 ExclusiveArch:          x86_64
 
