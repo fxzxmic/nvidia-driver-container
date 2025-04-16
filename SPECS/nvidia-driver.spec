@@ -3,7 +3,7 @@
 %endif
 
 Name:                   nvidia-driver
-Version:                570.124.04
+Version:                570.133.07
 Release:                1
 Summary:                NVIDIA binary driver for Linux container
 License:                NVIDIA
