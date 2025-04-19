@@ -13,7 +13,6 @@ Source1:                https://download.nvidia.com/XFree86/Linux-%{_arch}/%{ver
 
 BuildRequires:          jq
 
-Requires:               libnvidia-egl-wayland.so.1()%{?elf_bits}
 Requires:               libnvidia-egl-gbm.so.1()%{?elf_bits}
 
 Requires:               %{_datadir}/glvnd/egl_vendor.d
@@ -124,6 +123,7 @@ fi
 %ghost %{_datadir}/vulkan/icd.d/nvidia_icd.json
 %ghost %{_datadir}/vulkan/implicit_layer.d/nvidia_layers.json
 %{_datadir}/glvnd/egl_vendor.d/*
+%dir %{_datadir}/nvidia/vulkan
 %{_datadir}/nvidia/vulkan/egl-nvidia_icd.json
 %{_datadir}/nvidia/vulkan/egl-nvidia_layers.json
 # nvidia-gbm
