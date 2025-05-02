@@ -1,11 +1,12 @@
 %if 0%{?__isa_bits} == 64
-%global elf_bits (64bit)
+%global elf_bits ()(64bit)
 %endif
 
 Name:                   nvidia-driver
-Version:                570.133.07
+Version:                570.144
 Release:                1
 Summary:                NVIDIA binary driver for Linux container
+Group:                  System Environment/Graphics
 License:                NVIDIA
 URL:                    http://www.nvidia.com/
 Source0:                https://download.nvidia.com/XFree86/Linux-%{_arch}/%{version}/NVIDIA-Linux-%{_arch}-%{version}-no-compat32.run
@@ -13,7 +14,7 @@ Source1:                https://download.nvidia.com/XFree86/Linux-%{_arch}/%{ver
 
 BuildRequires:          jq
 
-Requires:               libnvidia-egl-gbm.so.1()%{?elf_bits}
+Requires:               libnvidia-egl-gbm.so.1%{?elf_bits}
 
 Requires:               %{_datadir}/glvnd/egl_vendor.d
 Requires:               %{_datadir}/vulkan/icd.d
@@ -47,11 +48,10 @@ install -Dm0644 /dev/null -t %{buildroot}%{_datadir}/vulkan/implicit_layer.d/nvi
 
 mv libnvidia-gpucomp.so.%{version} %{buildroot}%{_libdir}/nvidia
 mv libnvidia-api.so.* %{buildroot}%{_libdir}/nvidia
-mv libnvidia-glcore.so.%{version} %{buildroot}%{_libdir}/nvidia
 mv libnvidia-tls.so.%{version} %{buildroot}%{_libdir}/nvidia
 mv nvidia_icd.json %{buildroot}%{_datadir}/nvidia/vulkan
 mv nvidia_layers.json %{buildroot}%{_datadir}/nvidia/vulkan
-mv nvidia-application-profiles-%{version}-* %{buildroot}%{_datadir}/nvidia
+mv nvidia-application-profiles-%{version}-rc %{buildroot}%{_datadir}/nvidia
 mv libnvidia-glsi.so.%{version} %{buildroot}%{_libdir}/nvidia
 mv libnvidia-glvkspirv.so.%{version} %{buildroot}%{_libdir}/nvidia
 mv 10_nvidia.json %{buildroot}%{_datadir}/glvnd/egl_vendor.d
@@ -71,7 +71,6 @@ rm %{buildroot}%{_datadir}/nvidia/vulkan/nvidia_layers.json
 cd %{buildroot}%{_libdir}
 ln -sr nvidia/libnvidia-gpucomp.so.%{version} libnvidia-gpucomp.so.%{version}
 ln -sr nvidia/libnvidia-api.so.* libnvidia-api.so.1
-ln -sr nvidia/libnvidia-glcore.so.%{version} libnvidia-glcore.so.%{version}
 ln -sr nvidia/libnvidia-tls.so.%{version} libnvidia-tls.so.%{version}
 ln -sr nvidia/libnvidia-glsi.so.%{version} libnvidia-glsi.so.%{version}
 ln -sr nvidia/libnvidia-glvkspirv.so.%{version} libnvidia-glvkspirv.so.%{version}
@@ -81,7 +80,6 @@ ln -sr nvidia/libGLESv2_nvidia.so.%{version} libGLESv2_nvidia.so.2
 ln -sr nvidia/libGLESv1_CM_nvidia.so.%{version} libGLESv1_CM_nvidia.so.1
 ln -sr nvidia/libnvidia-allocator.so.%{version} libnvidia-allocator.so.1
 ln -sr libnvidia-allocator.so.1 gbm/nvidia-drm_gbm.so
-ln -sr libnvidia-allocator.so.1 libnvidia-allocator.so
 
 %post
 update-alternatives --install %{_datadir}/vulkan/icd.d/nvidia_icd.json nvidia-vulkan-icd %{_datadir}/nvidia/vulkan/egl-nvidia_icd.json 25 --slave %{_datadir}/vulkan/implicit_layer.d/nvidia_layers.json nvidia-vulkan-layers %{_datadir}/nvidia/vulkan/egl-nvidia_layers.json
@@ -101,20 +99,15 @@ fi
 %{_libdir}/libnvidia-gpucomp.so.%{version}
 %{_libdir}/nvidia/libnvidia-api.so.*
 %{_libdir}/libnvidia-api.so.1
-%{_libdir}/nvidia/libnvidia-glcore.so.%{version}
-%{_libdir}/libnvidia-glcore.so.%{version}
 %{_libdir}/nvidia/libnvidia-tls.so.%{version}
 %{_libdir}/libnvidia-tls.so.%{version}
 %{_libdir}/nvidia/libnvidia-glsi.so.%{version}
 %{_libdir}/libnvidia-glsi.so.%{version}
 %{_libdir}/nvidia/libnvidia-glvkspirv.so.%{version}
 %{_libdir}/libnvidia-glvkspirv.so.%{version}
-%{_libdir}/nvidia/libGLESv2_nvidia.so.%{version}
-%{_libdir}/libGLESv2_nvidia.so.2
-%{_libdir}/nvidia/libGLESv1_CM_nvidia.so.%{version}
-%{_libdir}/libGLESv1_CM_nvidia.so.1
 %dir %{_datadir}/nvidia
-%{_datadir}/nvidia/nvidia-*
+%dir %{_datadir}/nvidia/vulkan
+%{_datadir}/nvidia/nvidia-application-profiles-%{version}-rc
 # nvidia-egl
 %{_libdir}/nvidia/libnvidia-eglcore.so.%{version}
 %{_libdir}/libnvidia-eglcore.so.%{version}
@@ -123,14 +116,18 @@ fi
 %ghost %{_datadir}/vulkan/icd.d/nvidia_icd.json
 %ghost %{_datadir}/vulkan/implicit_layer.d/nvidia_layers.json
 %{_datadir}/glvnd/egl_vendor.d/*
-%dir %{_datadir}/nvidia/vulkan
 %{_datadir}/nvidia/vulkan/egl-nvidia_icd.json
 %{_datadir}/nvidia/vulkan/egl-nvidia_layers.json
 # nvidia-gbm
-%dir %{_libdir}/gbm
-%{_libdir}/gbm/*
 %{_libdir}/nvidia/libnvidia-allocator.so.%{version}
 %{_libdir}/libnvidia-allocator.so.1
-%{_libdir}/libnvidia-allocator.so
+%dir %{_libdir}/gbm
+%{_libdir}/gbm/*
+# nvidia-gles
+%{_libdir}/nvidia/libGLESv2_nvidia.so.%{version}
+%{_libdir}/libGLESv2_nvidia.so.2
+%{_libdir}/nvidia/libGLESv1_CM_nvidia.so.%{version}
+%{_libdir}/libGLESv1_CM_nvidia.so.1
 
 %changelog
+%autochangelog
