@@ -3,7 +3,7 @@
 %endif
 
 Name:                   nvidia-driver
-Version:                570.172.08
+Version:                580.76.05
 Release:                1
 Summary:                NVIDIA binary driver for Linux container
 Group:                  System Environment/Graphics
